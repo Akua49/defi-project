@@ -1,0 +1,34 @@
+name: Smart Contract CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Foundry
+        run: |
+          curl -L https://foundry.paradigm.xyz | bash
+          source ~/.bashrc
+          foundryup
+
+      - name: Build contracts
+        run: forge build
+
+      - name: Run tests
+        run: forge test -vv
+
+      - name: Gas report
+        run: forge test --gas-report
+
+      - name: Install Slither
+        run: pip install slither-analyzer
+
+      - name: Run Slither analysis
+        run: slither .
